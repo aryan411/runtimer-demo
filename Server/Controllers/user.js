@@ -35,12 +35,12 @@ const DBConfig = __importStar(require("../Config/db"));
 const user_1 = __importDefault(require("../Models/user"));
 const User = user_1.default;
 function processLoginPage(req, res, next) {
-    passport_1.default.authenticate('local', (err, user, info) => {
+    passport_1.default.authenticate("local", (err, user, info) => {
         if (err) {
             return next(err);
         }
         if (!user) {
-            return res.json({ success: false, msg: 'Error: Failed to log in user!' });
+            return res.json({ success: false, msg: "Error: Failed to log in user!" });
         }
         req.login(user, (err) => {
             if (err) {
@@ -50,17 +50,22 @@ function processLoginPage(req, res, next) {
                 id: user._id,
                 displayName: user.displayName,
                 username: user.username,
-                email: user.email
+                email: user.email,
             };
             const authToken = jsonwebtoken_1.default.sign(payload, DBConfig.Secret, {
-                expiresIn: 604800
+                expiresIn: 604800,
             });
-            return res.json({ success: true, msg: 'User Logged in Successfully!', user: {
+            return res.json({
+                success: true,
+                msg: "User Logged in Successfully!",
+                user: {
                     id: user._id,
                     displayName: user.displayName,
                     username: user.username,
-                    email: user.email
-                }, token: authToken });
+                    email: user.email,
+                },
+                token: authToken,
+            });
         });
     })(req, res, next);
 }
@@ -69,21 +74,20 @@ function processRegisterPage(req, res, next) {
     let newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        displayName: req.body.displayName
+        displayName: req.body.displayName,
     });
     User.register(newUser, req.body.password, (err) => {
         if (err) {
             if (err.name == "UserExistsError") {
             }
-            return res.json({ success: false, msg: 'Error: failed to create user.' });
+            return res.json({ success: false, msg: "Error: failed to create user." });
         }
         else {
-            return res.json({ success: true, msg: 'User Registered Successfully!' });
+            return res.json({ success: true, msg: "User Registered Successfully!" });
         }
     });
 }
 exports.processRegisterPage = processRegisterPage;
-;
 function processUpdateUser(req, res, next) {
     const id = req.body.id;
     const newDisplayName = req.body.displayName;
@@ -95,22 +99,27 @@ function processUpdateUser(req, res, next) {
         if (foundUser) {
             foundUser.changePassword(password, newPassword, (err) => {
                 if (err) {
-                    res.json({ success: false, message: 'old password does not match.' });
+                    res.json({
+                        success: false,
+                        message: "old password does not match.",
+                    });
                 }
                 else {
                     User.updateOne({ _id: id }, {
                         displayName: newDisplayName,
                         email: newEmail,
-                        update: Date.now()
+                        update: Date.now(),
                     }, (err) => {
                     });
                     foundUser.save();
-                    res.json({ success: true, message: 'password reset successful.' });
+                    res.json({ success: true, message: "password reset successful." });
                 }
             });
         }
         else {
-            res.status(500).json({ success: false, message: 'This user does not exist' });
+            res
+                .status(500)
+                .json({ success: false, message: "This user does not exist" });
         }
     }, (err) => {
         console.error(err);
@@ -118,9 +127,12 @@ function processUpdateUser(req, res, next) {
 }
 exports.processUpdateUser = processUpdateUser;
 function performLogout(req, res, next) {
-    req.logout();
-    res.json({ success: true, msg: 'User Successfully Logged out!' });
+    req.logout(function (err) {
+        if (err) {
+            res.json({ success: false, msg: err });
+        }
+        res.json({ success: true, msg: "User Successfully Logged out!" });
+    });
 }
 exports.performLogout = performLogout;
-;
 //# sourceMappingURL=user.js.map

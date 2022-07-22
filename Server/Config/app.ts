@@ -68,7 +68,7 @@ app.use(
 );
 
 // initialize flash
-// app.use(flash());
+app.use(flash());
 
 //* initialize passport
 app.use(passport.initialize());
@@ -127,7 +127,10 @@ app.use(function (
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({
+    message: err.message,
+    error: err
+  });
 });
 
 export default app; // exports app as the default Object for this module

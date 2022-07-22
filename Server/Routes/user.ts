@@ -5,9 +5,9 @@ import jwt from 'jsonwebtoken';
 import passport from 'passport';
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+// router.get('/', function(req, res, next) {
+//   res.render('index', { title: 'Express' });
+// });
 
 /* POST Route for processing the Login page */
 router.post('/login', userController.processLoginPage);
@@ -16,7 +16,7 @@ router.post('/login', userController.processLoginPage);
 router.post('/register', userController.processRegisterPage);
 
 /* POST Route for processing the Register page */
-router.post('/update', passport.authenticate('jwt', {session: false}), userController.processUpdateUser);
+router.post('/update', userController.processUpdateUser); //passport.authenticate('jwt', {session: false})
 
 /* GET to perform UserLogout */
 router.get('/logout', userController.performLogout);

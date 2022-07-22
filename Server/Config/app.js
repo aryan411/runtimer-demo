@@ -32,6 +32,7 @@ const path_1 = __importDefault(require("path"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
+const connect_flash_1 = __importDefault(require("connect-flash"));
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
 const passport_jwt_1 = __importDefault(require("passport-jwt"));
@@ -64,6 +65,7 @@ app.use((0, express_session_1.default)({
     saveUninitialized: false,
     resave: false,
 }));
+app.use((0, connect_flash_1.default)());
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 const user_2 = __importDefault(require("../Models/user"));
@@ -92,7 +94,10 @@ app.use(function (err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "development" ? err : {};
     res.status(err.status || 500);
-    res.render("error");
+    res.json({
+        message: err.message,
+        error: err
+    });
 });
 exports.default = app;
 //# sourceMappingURL=app.js.map

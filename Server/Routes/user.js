@@ -29,13 +29,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const userController = __importStar(require("../Controllers/user"));
-const passport_1 = __importDefault(require("passport"));
-router.get('/', function (req, res, next) {
-    res.render('index', { title: 'Express' });
-});
 router.post('/login', userController.processLoginPage);
 router.post('/register', userController.processRegisterPage);
-router.post('/update', passport_1.default.authenticate('jwt', { session: false }), userController.processUpdateUser);
+router.post('/update', userController.processUpdateUser);
 router.get('/logout', userController.performLogout);
 exports.default = router;
 //# sourceMappingURL=user.js.map
